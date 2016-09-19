@@ -47,6 +47,7 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
         '''
 
         withEnv([
+          "VERSION=$VERSION",
           'TARGET=tulip_chiphd-userdebug',
           'USE_CCACHE=true',
           'CCACHE_DIR=/ccache',
@@ -71,6 +72,7 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
         }
 
         withEnv([
+          "VERSION=$VERSION",
           'TARGET=tulip_chiphd_atv-userdebug',
           'USE_CCACHE=true',
           'CCACHE_DIR=/ccache',
