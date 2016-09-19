@@ -139,9 +139,6 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
                 --description "${CHANGES}\n\n${BUILD_URL}"
             fi
           '''
-
-          stage 'Artifacts'
-          archiveArtifacts artifacts: '*.gz', excludes: null, fingerprint: true, onlyIfSuccessful: true
         }
       }
     }
