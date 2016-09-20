@@ -11,24 +11,24 @@ properties([
 */
 
 node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
-	stage 'System'
-	sh '''#!/bin/bash
-	sudo apt-get update -y
-	sudo apt-get install -y openjdk-8-jdk python git-core gnupg flex bison gperf build-essential \
-		zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 \
-		lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache \
-		libgl1-mesa-dev libxml2-utils xsltproc unzip mtools u-boot-tools \
-		htop iotop sysstat iftop pigz bc
-	'''
+  stage 'System'
+  sh '''#!/bin/bash
+  sudo apt-get update -y
+  sudo apt-get install -y openjdk-8-jdk python git-core gnupg flex bison gperf build-essential \
+    zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 \
+    lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache \
+    libgl1-mesa-dev libxml2-utils xsltproc unzip mtools u-boot-tools \
+    htop iotop sysstat iftop pigz bc
+  '''
 
-	sh '''#!/bin/bash
-	set -xe
-	mkdir -p ~/bin
-	curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
-	chmod a+x ~/bin/repo
-	'''
+  sh '''#!/bin/bash
+  set -xe
+  mkdir -p ~/bin
+  curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+  chmod a+x ~/bin/repo
+  '''
 
-	ws('/android') {
+  ws('/android') {
     timestamps {
       wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
         stage 'Prepare'
@@ -64,10 +64,10 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
 
           stage 'Image Regular'
           sh '''#!/bin/bash
-        		source build/envsetup.sh
-        		lunch "${TARGET}"
+            source build/envsetup.sh
+            lunch "${TARGET}"
             set -xe
-        		sdcard_image "${JOB_NAME}-v${VERSION}-r${BUILD_NUMBER}.img.gz"
+            sdcard_image "${JOB_NAME}-v${VERSION}-r${BUILD_NUMBER}.img.gz"
           '''
         }
 
@@ -89,10 +89,10 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
 
           stage 'Image TV'
           sh '''#!/bin/bash
-        		source build/envsetup.sh
-        		lunch "${TARGET}"
+            source build/envsetup.sh
+            lunch "${TARGET}"
             set -xe
-        		sdcard_image "${JOB_NAME}-tv-v${VERSION}-r${BUILD_NUMBER}.img.gz"
+            sdcard_image "${JOB_NAME}-tv-v${VERSION}-r${BUILD_NUMBER}.img.gz"
           '''
         }
 
@@ -144,5 +144,5 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
         }
       }
     }
-	}
+  }
 }
