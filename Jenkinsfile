@@ -18,7 +18,7 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
     zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 \
     lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache \
     libgl1-mesa-dev libxml2-utils xsltproc unzip mtools u-boot-tools \
-    htop iotop sysstat iftop pigz bc device-tree-compiler
+    htop iotop sysstat iftop pigz bc device-tree-compiler lunzip
   '''
 
   sh '''#!/bin/bash
