@@ -48,6 +48,30 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
 
         withEnv([
           "VERSION=$VERSION",
+          "CHANGES=$CHANGES",
+          "GITHUB_USER=$GITHUB_USER",
+          "GITHUB_REPO=$GITHUB_REPO"
+        ]) {
+          stage 'Freeze'
+          sh '''#!/bin/bash
+            # use -ve, otherwise we could leak GITHUB_TOKEN...
+            set -ve
+            shopt -s nullglob
+
+            repo manifest -r -o manifest.xml
+
+            curl -X PUT -H "Authorization: token $GITHUB_TOKEN" \
+              -d "{\"message\":\"Add $VERSION changes\", \"committer\":{\"name\":\"Jenkins\",\"email\":\"jenkins@ayufan.eu\"},\"content\":\"$(echo "$CHANGES" | base64)\"}" \
+              "https://api.github.com/repos/$GITHUB_USER/$GITHUB_REPO/contents/versions/$VERSION/CHANGES.md"
+
+            curl -X PUT -H "Authorization: token $GITHUB_TOKEN" \
+              -d "{\"message\":\"Add $VERSION manifest\", \"committer\":{\"name\":\"Jenkins\",\"email\":\"jenkins@ayufan.eu\"},\"content\":\"$(base64 manifest.xml)\"}" \
+              "https://api.github.com/repos/$GITHUB_USER/$GITHUB_REPO/contents/versions/$VERSION/manifest.xml"
+          '''
+        }
+
+        withEnv([
+          "VERSION=$VERSION",
           'TARGET=tulip_chiphd-userdebug',
           'USE_CCACHE=true',
           'CCACHE_DIR=/ccache',
@@ -108,8 +132,6 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
             set -xe
             shopt -s nullglob
 
-            echo "Hello World" > test
-
             export PATH=$(pwd)/bin/linux/amd64:$PATH
             if ! which github-release; then
               curl -L https://github.com/aktau/github-release/releases/download/v0.6.2/linux-amd64-github-release.tar.bz2 | tar jx
@@ -120,6 +142,11 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
                 --name "$VERSION: $BUILD_TAG" \
                 --description "${CHANGES}\n\n${BUILD_URL}" \
                 --draft
+
+            github-release upload \
+                --tag "${VERSION}" \
+                --name "manifest.xml" \
+                --file "manifest.xml"
 
             for file in *.gz; do
               github-release upload \
