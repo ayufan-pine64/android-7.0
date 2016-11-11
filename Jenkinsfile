@@ -58,7 +58,7 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
             set -ve
             shopt -s nullglob
 
-            repo manifest -r -o manifest.xml
+            ~/bin/repo manifest -r -o manifest.xml
 
             curl -X PUT -H "Authorization: token $GITHUB_TOKEN" \
               -d "{\"message\":\"Add $VERSION changes\", \"committer\":{\"name\":\"Jenkins\",\"email\":\"jenkins@ayufan.eu\"},\"content\":\"$(echo "$CHANGES" | base64)\"}" \
