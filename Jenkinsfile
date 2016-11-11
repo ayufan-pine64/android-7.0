@@ -61,11 +61,11 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
             ~/bin/repo manifest -r -o manifest.xml
 
             curl --fail -X PUT -H "Authorization: token $GITHUB_TOKEN" \
-              -d "{\"message\":\"Add $VERSION changes\", \"committer\":{\"name\":\"Jenkins\",\"email\":\"jenkins@ayufan.eu\"},\"content\":\"$(echo "$CHANGES" | base64 -w 0)\"}" \
+              -d "{\\"message\\":\\"Add $VERSION changes\\", \\"committer\\":{\\"name\\":\\"Jenkins\\",\\"email\\":\\"jenkins@ayufan.eu\\"},\\"content\\":\\"$(echo "$CHANGES" | base64 -w 0)\\"}" \
               "https://api.github.com/repos/$GITHUB_USER/$GITHUB_REPO/contents/versions/$VERSION/CHANGES.md"
 
             curl --fail -X PUT -H "Authorization: token $GITHUB_TOKEN" \
-              -d "{\"message\":\"Add $VERSION manifest\", \"committer\":{\"name\":\"Jenkins\",\"email\":\"jenkins@ayufan.eu\"},\"content\":\"$(base64 -w 0 manifest.xml)\"}" \
+              -d "{\\"message\\":\\"Add $VERSION manifest\\", \\"committer\\":{\\"name\\":\\"Jenkins\\",\\"email\\":\\"jenkins@ayufan.eu\\"},\\"content\\":\\"$(base64 -w 0 manifest.xml)\\"}" \
               "https://api.github.com/repos/$GITHUB_USER/$GITHUB_REPO/contents/versions/$VERSION/manifest.xml"
           '''
         }
