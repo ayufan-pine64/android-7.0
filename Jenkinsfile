@@ -39,7 +39,7 @@ node('digitalocean && ubuntu-16.04 && 8gb && android-7.0') {
 
         set -xe
 
-        ~/bin/repo init -u https://android.googlesource.com/platform/manifest -b android-7.0.0_r1 --depth=1
+        ~/bin/repo init -u https://android.googlesource.com/platform/manifest -b android-7.0.0_r21 --depth=1
         rm -rf .repo/local_manifests
         git clone https://github.com/ayufan-pine64/local_manifests -b nougat .repo/local_manifests
 
