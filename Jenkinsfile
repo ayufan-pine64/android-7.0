@@ -72,31 +72,6 @@ node('digitalocean && ubuntu-16.04 && 16gb && android-7.0') {
 
         withEnv([
           "VERSION=$VERSION",
-          'TARGET=tulip_chiphd-userdebug',
-          'USE_CCACHE=true',
-          'CCACHE_DIR=/ccache',
-          'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation'
-        ]) {
-          stage 'Regular'
-          retry(2) {
-            sh '''#!/bin/bash
-              source build/envsetup.sh
-              lunch "${TARGET}"
-              make -j
-            '''
-          }
-
-          stage 'Image Regular'
-          sh '''#!/bin/bash
-            source build/envsetup.sh
-            lunch "${TARGET}"
-            set -xe
-            sdcard_image "${JOB_NAME}-v${VERSION}-r${BUILD_NUMBER}.img.gz"
-          '''
-        }
-
-        withEnv([
-          "VERSION=$VERSION",
           'TARGET=tulip_chiphd_pinebook-userdebug',
           'USE_CCACHE=true',
           'CCACHE_DIR=/ccache',
@@ -119,31 +94,7 @@ node('digitalocean && ubuntu-16.04 && 16gb && android-7.0') {
             sdcard_image "${JOB_NAME}-pinebook-v${VERSION}-r${BUILD_NUMBER}.img.gz" pinebook
           '''
         }
-        withEnv([
-          "VERSION=$VERSION",
-          'TARGET=tulip_chiphd_atv-userdebug',
-          'USE_CCACHE=true',
-          'CCACHE_DIR=/ccache',
-          'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation'
-        ]) {
-          stage 'TV'
-          retry(2) {
-            sh '''#!/bin/bash
-              source build/envsetup.sh
-              lunch "${TARGET}"
-              make -j
-            '''
-          }
-
-          stage 'Image TV'
-          sh '''#!/bin/bash
-            source build/envsetup.sh
-            lunch "${TARGET}"
-            set -xe
-            sdcard_image "${JOB_NAME}-tv-v${VERSION}-r${BUILD_NUMBER}.img.gz"
-          '''
-        }
-
+      
         withEnv([
           "VERSION=$VERSION",
           "CHANGES=$CHANGES",
