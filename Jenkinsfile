@@ -41,7 +41,6 @@ node('docker && android-build') {
             sh '''#!/bin/bash
               prebuilts/misc/linux-x86/ccache/ccache -M 0 -F 0
               rm -f *.gz
-              git -C external/iw fetch -t aosp
             '''
         }
 
