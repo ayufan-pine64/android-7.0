@@ -35,7 +35,8 @@ node('docker && android-build') {
         withEnv([
           "VERSION=$VERSION",
           'TARGET=tulip_chiphd-userdebug',
-          'USE_CCACHE=true'
+          'USE_CCACHE=true',
+          'CCACHE_DIR=/srv/ccache'
         ]) {
             stage 'Prepare'
             sh '''#!/bin/bash
