@@ -15,7 +15,7 @@ node('docker && android-build') {
     wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
       stage "Environment"
       checkout scm
-      def environment = docker.build('build-environment:android-7.0')
+      def environment = docker.build('build-environment:android-7.0', 'dockerfiles')
 
       environment.inside("-v /srv/ccache:/srv/ccache") {
         stage 'Sources'
