@@ -17,7 +17,7 @@ node('docker && android-build') {
       checkout scm
       def environment = docker.build('build-environment:android-7.0')
 
-      environment.inside() {
+      environment.inside("-v /srv/ccache:/srv/ccache") {
         stage 'Sources'
         sh '''#!/bin/bash
 
