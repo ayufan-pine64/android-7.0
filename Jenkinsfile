@@ -73,8 +73,9 @@ node('docker && android-build') {
           "VERSION=$VERSION",
           'TARGET=tulip_chiphd-userdebug',
           'USE_CCACHE=true',
-          'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation'
           'CCACHE_DIR=/var/lib/ccache',
+          'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
+          'ANDROID_NO_TEST_CHECK=true'
         ]) {
           stage 'Regular'
           retry(2) {
@@ -98,8 +99,9 @@ node('docker && android-build') {
           "VERSION=$VERSION",
           'TARGET=tulip_chiphd_pinebook-userdebug',
           'USE_CCACHE=true',
-          'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation'
           'CCACHE_DIR=/var/lib/ccache',
+          'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
+          'ANDROID_NO_TEST_CHECK=true'
         ]) {
           stage 'Pinebook'
           retry(2) {
@@ -122,8 +124,9 @@ node('docker && android-build') {
           "VERSION=$VERSION",
           'TARGET=tulip_chiphd_atv-userdebug',
           'USE_CCACHE=true',
-          'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation'
           'CCACHE_DIR=/var/lib/ccache',
+          'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
+          'ANDROID_NO_TEST_CHECK=true'
         ]) {
           stage 'TV'
           retry(2) {
