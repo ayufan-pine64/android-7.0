@@ -19,7 +19,7 @@ node('docker && android-build') {
       }
       def environment = docker.build('build-environment:android-7.0', 'build-environment')
 
-      environment.inside("-v /srv/ccache:/srv/ccache") {
+      environment.inside("-v /var/lib/ccache:/var/lib/ccache") {
         stage 'Sources'
         sh '''#!/bin/bash
 
@@ -36,7 +36,7 @@ node('docker && android-build') {
           "VERSION=$VERSION",
           'TARGET=tulip_chiphd-userdebug',
           'USE_CCACHE=true',
-          'CCACHE_DIR=/srv/ccache'
+          'CCACHE_DIR=/var/lib/ccache',
         ]) {
             stage 'Prepare'
             sh '''#!/bin/bash
@@ -73,8 +73,8 @@ node('docker && android-build') {
           "VERSION=$VERSION",
           'TARGET=tulip_chiphd-userdebug',
           'USE_CCACHE=true',
-          'CCACHE_DIR=/srv/ccache',
           'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation'
+          'CCACHE_DIR=/var/lib/ccache',
         ]) {
           stage 'Regular'
           retry(2) {
@@ -98,8 +98,8 @@ node('docker && android-build') {
           "VERSION=$VERSION",
           'TARGET=tulip_chiphd_pinebook-userdebug',
           'USE_CCACHE=true',
-          'CCACHE_DIR=/srv/ccache',
           'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation'
+          'CCACHE_DIR=/var/lib/ccache',
         ]) {
           stage 'Pinebook'
           retry(2) {
@@ -122,8 +122,8 @@ node('docker && android-build') {
           "VERSION=$VERSION",
           'TARGET=tulip_chiphd_atv-userdebug',
           'USE_CCACHE=true',
-          'CCACHE_DIR=/srv/ccache',
           'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation'
+          'CCACHE_DIR=/var/lib/ccache',
         ]) {
           stage 'TV'
           retry(2) {
