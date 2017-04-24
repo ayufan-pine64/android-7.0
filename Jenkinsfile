@@ -14,8 +14,10 @@ node('docker && android-build') {
   timestamps {
     wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
       stage "Environment"
-      checkout scm
-      def environment = docker.build('build-environment:android-7.0', 'dockerfiles')
+      dir('build-environment') {
+        checkout scm
+      }
+      def environment = docker.build('build-environment:android-7.0', 'build-environment')
 
       environment.inside("-v /srv/ccache:/srv/ccache") {
         stage 'Sources'
@@ -39,6 +41,7 @@ node('docker && android-build') {
             sh '''#!/bin/bash
               prebuilts/misc/linux-x86/ccache/ccache -M 0 -F 0
               rm -f *.gz
+              git -C external/iw fetch -t aosp
             '''
         }
 
