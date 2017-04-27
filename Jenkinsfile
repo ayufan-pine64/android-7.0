@@ -173,8 +173,10 @@ node('docker && android-build') {
               github-release upload \
                   --tag "${VERSION}" \
                   --name "$(basename "$file")" \
-                  --file "$file"
+                  --file "$file" &
             done
+
+            wait
 
             if [[ "$PRERELEASE" == "true" ]]; then
               github-release edit \
