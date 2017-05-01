@@ -81,7 +81,7 @@ node('docker && android-build') {
           "VERSION=$VERSION",
           'TARGET=tulip_chiphd-userdebug',
           'USE_CCACHE=true',
-          'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
+          'ANDROID_JACK_VM_ARGS=-Xmx3g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
           'ANDROID_NO_TEST_CHECK=true'
         ]) {
           stage 'Regular'
@@ -120,7 +120,7 @@ node('docker && android-build') {
           "VERSION=$VERSION",
           'TARGET=tulip_chiphd_pinebook-userdebug',
           'USE_CCACHE=true',
-          'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
+          'ANDROID_JACK_VM_ARGS=-Xmx3g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
           'ANDROID_NO_TEST_CHECK=true'
         ]) {
           stage 'Pinebook'
@@ -158,7 +158,7 @@ node('docker && android-build') {
           "VERSION=$VERSION",
           'TARGET=tulip_chiphd_atv-userdebug',
           'USE_CCACHE=true',
-          'ANDROID_JACK_VM_ARGS=-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
+          'ANDROID_JACK_VM_ARGS=-Xmx3g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
           'ANDROID_NO_TEST_CHECK=true'
         ]) {
           stage 'TV'
