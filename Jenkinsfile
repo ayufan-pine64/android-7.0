@@ -110,8 +110,10 @@ node('docker && android-build') {
                 make -j$(($(nproc)+1))
               '''
             }
+          }
 
-            stage 'Image Regular'
+          stage 'Image Regular'
+          if (params.BUILD_TABLET) {
             sh '''#!/bin/bash
               source build/envsetup.sh
               lunch "${TARGET}"
@@ -151,8 +153,10 @@ node('docker && android-build') {
                 make -j$(($(nproc)+1))
               '''
             }
+          }
 
-            stage 'Image Pinebook'
+          stage 'Image Pinebook'
+          if (params.BUILD_PINEBOOK) {
             sh '''#!/bin/bash
               source build/envsetup.sh
               lunch "${TARGET}"
@@ -192,8 +196,10 @@ node('docker && android-build') {
                 make -j$(($(nproc)+1))
               '''
             }
+          }
 
-            stage 'Image TV'
+          stage 'Image TV'
+          if (params.BUILD_TV) {
             sh '''#!/bin/bash
               source build/envsetup.sh
               lunch "${TARGET}"
