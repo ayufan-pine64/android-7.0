@@ -6,6 +6,9 @@ properties([
     booleanParam(defaultValue: false, description: 'If build should be marked as pre-release', name: 'PRERELEASE'),
     string(defaultValue: 'ayufan-pine64', description: 'GitHub username or organization', name: 'GITHUB_USER'),
     string(defaultValue: 'android-7.0', description: 'GitHub repository', name: 'GITHUB_REPO'),
+    booleanParam(defaultValue: true, description: 'Select if you want to build tablet version.', name: 'BUILD_TABLET'),
+    booleanParam(defaultValue: true, description: 'Select if you want to build TV version.', name: 'BUILD_TV'),
+    booleanParam(defaultValue: true, description: 'Select if you want to build Pinebook version.', name: 'BUILD_PINEBOOK'),
   ])
 ])
 */
@@ -77,25 +80,15 @@ node('docker && android-build') {
           '''
         }
 
-        withEnv([
-          "VERSION=$VERSION",
-          'TARGET=tulip_chiphd-userdebug',
-          'USE_CCACHE=true',
-          'ANDROID_JACK_VM_ARGS=-Xmx3g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
-          'ANDROID_NO_TEST_CHECK=true'
-        ]) {
-          stage 'Regular'
-          sh '''#!/bin/bash
-            export CCACHE_DIR=$PWD/ccache
-            export HOME=$WORKSPACE
-            export USER=jenkins
-
-            source build/envsetup.sh
-            lunch "${TARGET}"
-            make installclean
-          '''
-
-          retry(2) {
+        if (params.BUILD_TABLET) {
+          withEnv([
+            "VERSION=$VERSION",
+            'TARGET=tulip_chiphd-userdebug',
+            'USE_CCACHE=true',
+            'ANDROID_JACK_VM_ARGS=-Xmx3g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
+            'ANDROID_NO_TEST_CHECK=true'
+          ]) {
+            stage 'Regular'
             sh '''#!/bin/bash
               export CCACHE_DIR=$PWD/ccache
               export HOME=$WORKSPACE
@@ -103,38 +96,40 @@ node('docker && android-build') {
 
               source build/envsetup.sh
               lunch "${TARGET}"
-              make -j$(($(nproc)+1))
+              make installclean
+            '''
+
+            retry(2) {
+              sh '''#!/bin/bash
+                export CCACHE_DIR=$PWD/ccache
+                export HOME=$WORKSPACE
+                export USER=jenkins
+
+                source build/envsetup.sh
+                lunch "${TARGET}"
+                make -j$(($(nproc)+1))
+              '''
+            }
+
+            stage 'Image Regular'
+            sh '''#!/bin/bash
+              source build/envsetup.sh
+              lunch "${TARGET}"
+              set -xe
+              sdcard_image "${JOB_NAME}-v${VERSION}-r${BUILD_NUMBER}.img.gz"
             '''
           }
-
-          stage 'Image Regular'
-          sh '''#!/bin/bash
-            source build/envsetup.sh
-            lunch "${TARGET}"
-            set -xe
-            sdcard_image "${JOB_NAME}-v${VERSION}-r${BUILD_NUMBER}.img.gz"
-          '''
         }
 
-        withEnv([
-          "VERSION=$VERSION",
-          'TARGET=tulip_chiphd_pinebook-userdebug',
-          'USE_CCACHE=true',
-          'ANDROID_JACK_VM_ARGS=-Xmx3g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
-          'ANDROID_NO_TEST_CHECK=true'
-        ]) {
-          stage 'Pinebook'
-          sh '''#!/bin/bash
-            export CCACHE_DIR=$PWD/ccache
-            export HOME=$WORKSPACE
-            export USER=jenkins
-
-            source build/envsetup.sh
-            lunch "${TARGET}"
-            make installclean
-          '''
-
-          retry(2) {
+        if (params.BUILD_PINEBOOK) {
+          withEnv([
+            "VERSION=$VERSION",
+            'TARGET=tulip_chiphd_pinebook-userdebug',
+            'USE_CCACHE=true',
+            'ANDROID_JACK_VM_ARGS=-Xmx3g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
+            'ANDROID_NO_TEST_CHECK=true'
+          ]) {
+            stage 'Pinebook'
             sh '''#!/bin/bash
               export CCACHE_DIR=$PWD/ccache
               export HOME=$WORKSPACE
@@ -142,37 +137,40 @@ node('docker && android-build') {
 
               source build/envsetup.sh
               lunch "${TARGET}"
-              make -j$(($(nproc)+1))
+              make installclean
+            '''
+
+            retry(2) {
+              sh '''#!/bin/bash
+                export CCACHE_DIR=$PWD/ccache
+                export HOME=$WORKSPACE
+                export USER=jenkins
+
+                source build/envsetup.sh
+                lunch "${TARGET}"
+                make -j$(($(nproc)+1))
+              '''
+            }
+
+            stage 'Image Pinebook'
+            sh '''#!/bin/bash
+              source build/envsetup.sh
+              lunch "${TARGET}"
+              set -xe
+              sdcard_image "${JOB_NAME}-pinebook-v${VERSION}-r${BUILD_NUMBER}.img.gz" pinebook
             '''
           }
-
-          stage 'Image Pinebook'
-          sh '''#!/bin/bash
-            source build/envsetup.sh
-            lunch "${TARGET}"
-            set -xe
-            sdcard_image "${JOB_NAME}-pinebook-v${VERSION}-r${BUILD_NUMBER}.img.gz" pinebook
-          '''
         }
-        withEnv([
-          "VERSION=$VERSION",
-          'TARGET=tulip_chiphd_atv-userdebug',
-          'USE_CCACHE=true',
-          'ANDROID_JACK_VM_ARGS=-Xmx3g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
-          'ANDROID_NO_TEST_CHECK=true'
-        ]) {
-          stage 'TV'
-          sh '''#!/bin/bash
-            export CCACHE_DIR=$PWD/ccache
-            export HOME=$WORKSPACE
-            export USER=jenkins
 
-            source build/envsetup.sh
-            lunch "${TARGET}"
-            make installclean
-          '''
-
-          retry(2) {
+        if (params.BUILD_TV) {
+          withEnv([
+            "VERSION=$VERSION",
+            'TARGET=tulip_chiphd_atv-userdebug',
+            'USE_CCACHE=true',
+            'ANDROID_JACK_VM_ARGS=-Xmx3g -Dfile.encoding=UTF-8 -XX:+TieredCompilation',
+            'ANDROID_NO_TEST_CHECK=true'
+          ]) {
+            stage 'TV'
             sh '''#!/bin/bash
               export CCACHE_DIR=$PWD/ccache
               export HOME=$WORKSPACE
@@ -180,17 +178,29 @@ node('docker && android-build') {
 
               source build/envsetup.sh
               lunch "${TARGET}"
-              make -j$(($(nproc)+1))
+              make installclean
+            '''
+
+            retry(2) {
+              sh '''#!/bin/bash
+                export CCACHE_DIR=$PWD/ccache
+                export HOME=$WORKSPACE
+                export USER=jenkins
+
+                source build/envsetup.sh
+                lunch "${TARGET}"
+                make -j$(($(nproc)+1))
+              '''
+            }
+
+            stage 'Image TV'
+            sh '''#!/bin/bash
+              source build/envsetup.sh
+              lunch "${TARGET}"
+              set -xe
+              sdcard_image "${JOB_NAME}-tv-v${VERSION}-r${BUILD_NUMBER}.img.gz"
             '''
           }
-
-          stage 'Image TV'
-          sh '''#!/bin/bash
-            source build/envsetup.sh
-            lunch "${TARGET}"
-            set -xe
-            sdcard_image "${JOB_NAME}-tv-v${VERSION}-r${BUILD_NUMBER}.img.gz"
-          '''
         }
 
         withEnv([
